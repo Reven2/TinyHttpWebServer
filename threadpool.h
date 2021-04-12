@@ -23,7 +23,9 @@ class threadpool
 		bool append(T* request);
 
 	private:
-		//工作线程运行的函数，它不断从任务队列取出任务执行
+//工作线程运行的函数，它不断从任务队列取出任务执行
+//pthread_create的函数原型中第三个参数的类型为函数指针，指向的线程处理函数参数类型为(void *),若线程函数为类成员函数，则this指针会作为默认的参数被传进函数中，从而和线程函数参数(void*)不能匹配，不能通过编译。
+//静态成员函数就没有这个问题，里面没有this指针。
 		static void* worker(void* arg);
 		void run();
 
