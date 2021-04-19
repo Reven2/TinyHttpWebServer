@@ -18,6 +18,7 @@ class MutexLocker
 					cout<<"mutex init error\n"<<endl;
 					throw exception();
 				}
+			else cout<<"init successfully\n";
 		}
 
 		~MutexLocker()
@@ -26,13 +27,16 @@ class MutexLocker
 		}
 
 		bool lock()
-		{	
+		{
 			return pthread_mutex_lock(&m_mutex)==0;
+			cout<<"lock succefully\n";
+
 		}
 
 		bool unlock()
 		{
 			return pthread_mutex_unlock(&m_mutex)==0;
+			cout<<"unlock succefully\n";
 		}
 	
 	private:
