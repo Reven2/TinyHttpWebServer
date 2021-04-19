@@ -36,7 +36,7 @@ class threadpool
 		pthread_t* m_threads;//描述线程池的数组，大小为m_thread_number
 		std::list<T*> m_workqueue;//请求（任务）队列(list类)
 		locker m_queuelocker;//保护请求队列的锁(locker类型)
-		sem m_queuestat;	//是否有任务需要处理(sem类型)
+		sem m_queuestat;	//有多少任务任务需要处理(sem类型)
 		bool m_stop;		//是否结束线程
 
 };
@@ -101,7 +101,7 @@ bool threadpool<T>::append(T* request)
 	m_workqueue.push_back(request);
 	m_queuelocker.unlock();
 
-	//任务 +1，表示有任务需要处理
+	//任务 +1，表示有任务需要处理，相当于解锁
 	m_queuestat.post();
 	return true;
 }
@@ -121,7 +121,8 @@ void threadpool<T>::run()
 {
 	while(1)
 	{
-		m_queuestat.wait(); //任务 -1 , 处理了一个任务
+		//若m_queuestat是0 则阻塞等待post+1然后才能继续执行
+		m_queuestat.wait(); //相当于加锁, 处理了一个任务
 
 		m_queuelocker.lock(); //加锁处理任务队列变化
 		if(m_workqueue.empty()) //如果任务队列早已经是空

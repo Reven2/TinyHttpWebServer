@@ -131,18 +131,31 @@ private:
 
 
 	//下面一组函数被process_write() 调用拿来填充HTTP应答
+	//除了第一个，其他几个是根据应答报文格式生成的
 	void unmap();
 	bool add_response(const char* fromat,...);//变参函数
+
 	bool add_content(const char* content);
+
+	//添加状态行内容，由 HTTP协议版本号,状态码,状态消息 组成
 	bool add_status_line(int status,const char *title);
+
+	//添加消息报头，是客户端要使用的一些附加信息
 	bool add_headers(int content_length);
+
+	//添加发送内容长度
+	bool add_content_length(int content_length);
+
+	//添加链接状态行内容
 	bool add_linger();
+
+	//添加最后一行空行
 	bool add_blank_line();
 
 
 public:
 	//epoll内核事件表设为static，所有socket事件都注册到上面
-	static int _m_epollfd;
+	static int m_epollfd;
 	//统计用户的数量
 	static int m_user_count;
 
@@ -198,7 +211,7 @@ private:
 	//	size_t iov_len;	 内存块的长度
 	//	}
 	struct iovec m_iv[2];
-	int m_iv_count;		//背写内存块的数量
+	int m_iv_count;		//被写内存块的数量
 
 };
 
