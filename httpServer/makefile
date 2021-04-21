@@ -1,6 +1,7 @@
 
-httpServer:httpServer.o
-	g++  -o httpServer  httpServer.cpp -lpthread
+httpServer:httpServer.cpp
+	g++  httpServer.cpp  -o  httpServer  -lpthread
+
 
 clean:
 	rm *.o
